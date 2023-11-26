@@ -1,12 +1,12 @@
 from django.contrib import auth
 from django.contrib.auth.models import User
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 
 # Create your views here.
 from django.http import HttpResponse
 
 def index(request):
-    return HttpResponse("这里是liujiangblog.com的投票站点")
+    return HttpResponse("主页")
 
 
 def register(request):
@@ -17,6 +17,27 @@ def register(request):
         user = User.objects.create_user(username=username, password=password)
         user.save()
         if user:
+            #todo这里要不要去掉auth.login()
             auth.login(request, user)
+            return redirect('login')  # 注册成功后跳转至登录
 
     return render(request, 'register.html')
+
+'''    用户登录'''
+def login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = auth.authenticate(username=username, password=password)
+        if user:
+            auth.login(request, user)  #这里做了登录
+            return redirect('userprofile')  # 跳转至首页
+    return render(request, "login.html")
+
+def userprofile(request):
+    name = request.user.username
+    return render(request, 'userprofile.html', {'name': name})
+
+def logout(request):
+    auth.logout(request)
+    return redirect('login')  # 退出后，页面跳转至登录界面
