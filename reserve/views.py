@@ -3,28 +3,39 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm
+from .models import Flight
 from .models import UserProfile
+from django.utils.dateparse import parse_date
 
 # Create your views here.
 from django.http import HttpResponse
 
 def index(request):
-    return HttpResponse("主页")
+    return render(request, 'index.html')
 
 
-# def register(request):
-#     if request.method == 'POST':
-#         username = request.POST.get('username')
-#         password = request.POST.get('password')
-#         # username, email=None, password=None, **extra_fields
-#         user = User.objects.create_user(username=username, password=password)
-#         user.save()
-#         if user:
-#             #todo这里要不要去掉auth.login()
-#             auth.login(request, user)
-#             return redirect('login')  # 注册成功后跳转至登录
-#
-#     return render(request, 'register.html')
+def search(request):
+    if request.method == 'POST':
+        departure_city = request.POST.get('departure_city')
+        arrival_city = request.POST.get('arrival_city')
+        departure_date_str = request.POST.get('departure_date')
+
+        # 将字符串格式的日期转换为日期对象
+        departure_date = parse_date(departure_date_str)
+        #print(departure_date)
+        # 在查询中只比较日期部分
+        flights = Flight.objects.filter(
+            departure=departure_city,
+            destination=arrival_city,
+            departure_time__date=departure_date
+        )
+        #print("QuerySet:", flights.query)  # 打印 SQL 查询
+
+        return render(request, 'search.html', {'flights': flights})
+
+    # 如果不是 POST 请求，可以重定向到首页或者显示错误消息
+    return redirect('index')
+
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)

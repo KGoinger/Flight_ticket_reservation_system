@@ -1,0 +1,23 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Flight Search</title>
+</head>
+<body>
+    <form action="{% url 'search' %}" method="post">
+        {% csrf_token %}
+        <label for="departure_city">出发城市:</label>
+        <input type="text" id="departure_city" name="departure_city">
+
+        <label for="arrival_city">到达城市:</label>
+        <input type="text" id="arrival_city" name="arrival_city">
+
+        <label for="departure_date">出发日期:</label>
+        <input type="date" id="departure_date" name="departure_date">
+
+        <input type="submit" value="查询">
+    </form>
+</body>
+</html>

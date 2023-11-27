@@ -1,0 +1,20 @@
+<!-- search.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Search Results</title>
+</head>
+<body>
+    <h2>查询结果</h2>
+    {% if flights %}
+        <ul>
+            {% for flight in flights %}
+                <li>{{ flight }}</li> <!-- 假设 'flight' 是一个简单的字符串表示；在实际应用中，这里可能更复杂 -->
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>没有找到符合条件的航班。</p>
+    {% endif %}
+</body>
+</html>
