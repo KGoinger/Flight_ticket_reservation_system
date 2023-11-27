@@ -7,11 +7,7 @@
     <body>
         <form method="post" action="{% url 'register' %}">
             {% csrf_token %}  {# 防止csrf（跨站请求伪造） #}
-            <label>账号：</label>
-            <input name="username">
-            <div></div>
-            <label>密码：</label>
-            <input name="password">
+            {{ form.as_p }}
             <input type="submit" value="注册" />
         </form>
     </body>

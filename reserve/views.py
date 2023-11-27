@@ -2,6 +2,8 @@ from django.contrib import auth
 from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from .forms import UserRegistrationForm
+from .models import UserProfile
 
 # Create your views here.
 from django.http import HttpResponse
@@ -10,19 +12,28 @@ def index(request):
     return HttpResponse("主页")
 
 
+# def register(request):
+#     if request.method == 'POST':
+#         username = request.POST.get('username')
+#         password = request.POST.get('password')
+#         # username, email=None, password=None, **extra_fields
+#         user = User.objects.create_user(username=username, password=password)
+#         user.save()
+#         if user:
+#             #todo这里要不要去掉auth.login()
+#             auth.login(request, user)
+#             return redirect('login')  # 注册成功后跳转至登录
+#
+#     return render(request, 'register.html')
 def register(request):
     if request.method == 'POST':
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        # username, email=None, password=None, **extra_fields
-        user = User.objects.create_user(username=username, password=password)
-        user.save()
-        if user:
-            #todo这里要不要去掉auth.login()
-            auth.login(request, user)
-            return redirect('login')  # 注册成功后跳转至登录
-
-    return render(request, 'register.html')
+        form = UserRegistrationForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('login')  # 或其他适合的重定向
+    else:
+        form = UserRegistrationForm()
+    return render(request, 'register.html', {'form': form})
 
 '''    用户登录'''
 def login(request):
