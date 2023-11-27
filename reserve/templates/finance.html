@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>首页</title>
+    </head>
+    <body>
+        <div>
+            <h4>{{ name }} 欢迎管理员登陆！</h4>
+            <h4>欢迎管理员登陆！</h4>
+        </div>
+        <div>
+            <h5>
+                <label>user: </label>
+                {{ request.user }}
+            </h5>
+            <h5>
+                <label>user.name: </label>
+                {{ request.user.username }}
+            </h5>
+            <h5>
+                <label>user.password: </label>
+                {{ request.user.password }}
+            </h5>
+        </div>
+        <div>
+            <a href="{% url 'logout' %}">退出</a>
+        </div>
+    </body>
+</html>
