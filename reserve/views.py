@@ -8,6 +8,10 @@ from django.utils import timezone
 from .models import UserProfile
 from django.utils.dateparse import parse_date
 from django.shortcuts import render, get_object_or_404
+from django.db.models import F
+from django.db.models import Sum
+from datetime import timedelta
+
 
 # Create your views here.
 from django.http import HttpResponse
@@ -72,34 +76,75 @@ def logout(request):
     return redirect('login')  # 退出后，页面跳转至登录界面
 @login_required(login_url='/login/')
 def finance(request):
-    name = request.user.username
-    return render(request, 'finance.html', {'name': name})
+    # 获取所有订单
+    orders = Order.objects.all()
+
+    # 将订单传递给模板
+    return render(request, 'finance.html', {'orders': orders})
 
 @login_required(login_url='/login/')
 def book_ticket(request, flight_id):
     flight = get_object_or_404(Flight, pk=flight_id)
+    user_profile = UserProfile.objects.get(user=request.user)
+    remaining_seats = flight.capacity - flight.book_sum
 
     if request.method == 'POST':
-        # 这里假设用户已经登录并且request.user是当前登录用户
-        user = request.user
+        print("ok")
+        # 检查余票
+        if flight.book_sum >= flight.capacity:
+            # 处理没有余票的情况
+            return render(request, 'book_ticket.html', {
+                'flight': flight,
+                'error': '对不起，该航班已无余票。'
+            })
+
+        # 检查用户余额是否足够
+        if user_profile.balance < flight.price:
+            # 处理余额不足的情况
+            return render(request, 'book_ticket.html', {
+                'flight': flight,
+                'error': '余额不足，请充值后再预订。',
+                'remaining_seats': remaining_seats
+            })
+
+        # 扣除用户余额
+        user_profile.balance -= flight.price
+        user_profile.save()
+
+        # 更新航班预订数
+        Flight.objects.filter(pk=flight_id).update(book_sum=F('book_sum') + 1)
 
         # 创建订单
         order = Order(
-            user=user,
+            user=request.user,
             flight=flight,
-            booking_time=timezone.now(),  # 使用Django的timezone模块来获取当前时间
-            order_status='成功'  # 假设初始状态为“成功”
+            booking_time=timezone.now(),
+            order_status='成功'
         )
         order.save()
 
-        # 可以重定向到一个新的页面，比如订单详情页面或预订确认页面
+        # 重定向到用户个人资料页面
         return redirect('userprofile')
 
-    return render(request, 'book_ticket.html', {'flight': flight})
+    return render(request, 'book_ticket.html', {'flight': flight,'remaining_seats': remaining_seats})
 
 def cancel_order(request,order_id):
+    # 缺少检查：只有起飞时间大于当前时间才能退票
     # 获取订单对象，确保只有订单的所有者才能退票
     order = get_object_or_404(Order, pk=order_id, user=request.user)
+
+    # 检查订单状态和航班起飞时间
+    if order.order_status != '成功' or order.flight.departure_time <= timezone.now():
+        # 如果订单不是“成功”状态或航班已起飞，处理错误情况
+        return HttpResponse("非法退票操作")  # 请替换为适当的错误处理
+
+    # 归还用户的余额
+    user_profile = UserProfile.objects.get(user=order.user)
+    user_profile.balance += order.flight.price
+    user_profile.save()
+
+    # 减少已预订的座位数
+    Flight.objects.filter(pk=order.flight.id).update(book_sum=F('book_sum') - 1)
 
     # 更新订单状态为“退票”
     order.order_status = '退票'

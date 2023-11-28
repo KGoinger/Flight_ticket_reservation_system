@@ -7,15 +7,21 @@
 <body>
     <h2>预订航班</h2>
     {% if flight %}
-        <p>您正在预订的航班: {{ flight.name }}</p>
-        <form method="post">
+        <!-- 显示错误消息 -->
+        {% if error %}
+            <p style="color: red;">{{ error }}</p>
+        {% endif %}
+        <p>航班名: {{ flight.flight_name }}</p>
+        <p>起飞城市: {{ flight.departure }}</p>
+        <p>到达城市: {{ flight.destination }}</p>
+        <p>起飞时间: {{ flight.departure_time }}</p>
+        <p>到达时间: {{ flight.arrival_time }}</p>
+        <p>价格: {{ flight.price }}</p>
+        <p>余票数量: {{ remaining_seats }}</p>
+
+
+        <form method="post" action="{% url 'book_ticket' flight.id %}">
             {% csrf_token %}
-            <label for="name">姓名:</label>
-            <input type="text" id="name" name="name" required><br><br>
-
-            <label for="contact">联系方式:</label>
-            <input type="text" id="contact" name="contact" required><br><br>
-
             <input type="submit" value="提交预订">
         </form>
     {% else %}

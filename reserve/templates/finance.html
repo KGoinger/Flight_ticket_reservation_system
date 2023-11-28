@@ -1,30 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <meta charset="UTF-8">
-        <title>首页</title>
-    </head>
-    <body>
-        <div>
-            <h4>{{ name }} 欢迎管理员登陆！</h4>
-            <h4>欢迎管理员登陆！</h4>
-        </div>
-        <div>
-            <h5>
-                <label>user: </label>
-                {{ request.user }}
-            </h5>
-            <h5>
-                <label>user.name: </label>
-                {{ request.user.username }}
-            </h5>
-            <h5>
-                <label>user.password: </label>
-                {{ request.user.password }}
-            </h5>
-        </div>
-        <div>
-            <a href="{% url 'logout' %}">退出</a>
-        </div>
+    <meta charset="UTF-8">
+    <title>财务信息</title>
+</head>
+<body>
+    <h2>所有订单</h2>
+    <table>
+        <tr>
+            <th>订单编号</th>
+            <th>旅客</th>
+            <th>航班名</th>
+            <th>起飞城市</th>
+            <th>目的城市</th>
+            <th>起飞时间</th>
+            <th>状态</th>
+            <th>价格</th>
+        </tr>
+        {% for order in orders %}
+            <tr>
+                <td>{{ order.id }}</td>
+                <td>{{ order.user.username }}</td>
+                <td>{{ order.flight.flight_name }}</td>
+                <td>{{ order.flight.departure }}</td>
+                <td>{{ order.flight.destination }}</td>
+                <td>{{ order.flight.departure_time }}</td>
+                <td>{{ order.order_status }}</td>
+                <td>{{ order.flight.price }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="7">没有订单</td></tr>
+        {% endfor %}
+    </table>
     </body>
 </html>
