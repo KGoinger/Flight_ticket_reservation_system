@@ -64,8 +64,8 @@ def login(request):
 
 @login_required(login_url='/login/')
 def userprofile(request):
-    name = request.user.username
-    return render(request, 'userprofile.html', {'name': name})
+    orders = Order.objects.filter(user=request.user,order_status='成功')
+    return render(request, 'userprofile.html', {'orders': orders})
 
 def logout(request):
     auth.logout(request)
@@ -93,6 +93,17 @@ def book_ticket(request, flight_id):
         order.save()
 
         # 可以重定向到一个新的页面，比如订单详情页面或预订确认页面
-        return redirect('order_details', order_id=order.id)
+        return redirect('userprofile')
 
     return render(request, 'book_ticket.html', {'flight': flight})
+
+def cancel_order(request,order_id):
+    # 获取订单对象，确保只有订单的所有者才能退票
+    order = get_object_or_404(Order, pk=order_id, user=request.user)
+
+    # 更新订单状态为“退票”
+    order.order_status = '退票'
+    order.save()
+
+    # 重定向到用户主页
+    return redirect('userprofile')
