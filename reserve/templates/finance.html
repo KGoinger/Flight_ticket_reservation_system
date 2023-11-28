@@ -5,6 +5,32 @@
     <title>财务信息</title>
 </head>
 <body>
+    <h2>财务报告</h2>
+
+    <section>
+        <h3>周收入</h3>
+        <p>航班架次: {{ weekly_flights }}</p>
+        <p>总收入: {{ weekly_income }}</p>
+        <p>退票金额: {{ weekly_refunds }}</p>
+        <p>利润: {{ weekly_profit }}</p>
+    </section>
+
+    <section>
+        <h3>月收入</h3>
+        <p>航班架次: {{ monthly_flights }}</p>
+        <p>总收入: {{ monthly_income }}</p>
+        <p>退票金额: {{ monthly_refunds }}</p>
+        <p>利润: {{ monthly_profit }}</p>
+    </section>
+
+    <section>
+        <h3>年收入</h3>
+        <p>航班架次: {{ yearly_flights }}</p>
+        <p>总收入: {{ yearly_income }}</p>
+        <p>退票金额: {{ yearly_refunds }}</p>
+        <p>利润: {{ yearly_profit }}</p>
+    </section>
+
     <h2>所有订单</h2>
     <table>
         <tr>

@@ -78,9 +78,44 @@ def logout(request):
 def finance(request):
     # 获取所有订单
     orders = Order.objects.all()
+    current_time = timezone.now()
 
-    # 将订单传递给模板
-    return render(request, 'finance.html', {'orders': orders})
+    # 计算不同时间段的收入和退票金额
+    def calculate_financial_data(start_date):
+        data = Order.objects.filter(booking_time__gte=start_date)
+        total_income = data.aggregate(Sum('flight__price'))['flight__price__sum'] or 0
+        total_refunds = data.filter(order_status='退票').aggregate(Sum('flight__price'))['flight__price__sum'] or 0
+        profit = total_income - total_refunds
+        return data.count(), total_income, total_refunds, profit
+
+    # 计算周收入
+    week_ago = current_time - timedelta(days=7)
+    weekly_flights, weekly_income, weekly_refunds, weekly_profit = calculate_financial_data(week_ago)
+
+    # 计算月收入
+    month_ago = current_time - timedelta(days=30)
+    monthly_flights, monthly_income, monthly_refunds, monthly_profit = calculate_financial_data(month_ago)
+
+    # 计算年收入
+    year_ago = current_time - timedelta(days=365)
+    yearly_flights, yearly_income, yearly_refunds, yearly_profit = calculate_financial_data(year_ago)
+
+    return render(request, 'finance.html', {
+        'orders':orders,
+        'weekly_flights': weekly_flights,
+        'weekly_income': weekly_income,
+        'weekly_refunds': weekly_refunds,
+        'weekly_profit': weekly_profit,
+        'monthly_flights': monthly_flights,
+        'monthly_income': monthly_income,
+        'monthly_refunds': monthly_refunds,
+        'monthly_profit': monthly_profit,
+        'yearly_flights': yearly_flights,
+        'yearly_income': yearly_income,
+        'yearly_refunds': yearly_refunds,
+        'yearly_profit': yearly_profit
+    })
+
 
 @login_required(login_url='/login/')
 def book_ticket(request, flight_id):
