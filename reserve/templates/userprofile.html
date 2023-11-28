@@ -17,10 +17,6 @@
                 <label>user.name: </label>
                 {{ request.user.username }}
             </h5>
-            <h5>
-                <label>user.password: </label>
-                {{ request.user.password }}
-            </h5>
         </div>
         <div>
             <a href="{% url 'logout' %}">退出</a>

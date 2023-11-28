@@ -3,9 +3,11 @@ from django.contrib.auth.models import User
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm
-from .models import Flight
+from .models import Flight,Order
+from django.utils import timezone
 from .models import UserProfile
 from django.utils.dateparse import parse_date
+from django.shortcuts import render, get_object_or_404
 
 # Create your views here.
 from django.http import HttpResponse
@@ -72,3 +74,25 @@ def logout(request):
 def finance(request):
     name = request.user.username
     return render(request, 'finance.html', {'name': name})
+
+@login_required(login_url='/login/')
+def book_ticket(request, flight_id):
+    flight = get_object_or_404(Flight, pk=flight_id)
+
+    if request.method == 'POST':
+        # 这里假设用户已经登录并且request.user是当前登录用户
+        user = request.user
+
+        # 创建订单
+        order = Order(
+            user=user,
+            flight=flight,
+            booking_time=timezone.now(),  # 使用Django的timezone模块来获取当前时间
+            order_status='成功'  # 假设初始状态为“成功”
+        )
+        order.save()
+
+        # 可以重定向到一个新的页面，比如订单详情页面或预订确认页面
+        return redirect('order_details', order_id=order.id)
+
+    return render(request, 'book_ticket.html', {'flight': flight})

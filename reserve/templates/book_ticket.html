@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Ticket</title>
+</head>
+<body>
+    <h2>预订航班</h2>
+    {% if flight %}
+        <p>您正在预订的航班: {{ flight.name }}</p>
+        <form method="post">
+            {% csrf_token %}
+            <label for="name">姓名:</label>
+            <input type="text" id="name" name="name" required><br><br>
+
+            <label for="contact">联系方式:</label>
+            <input type="text" id="contact" name="contact" required><br><br>
+
+            <input type="submit" value="提交预订">
+        </form>
+    {% else %}
+        <p>航班信息不存在。</p>
+    {% endif %}
+</body>
+</html>
