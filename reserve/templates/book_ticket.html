@@ -4,26 +4,134 @@
 <head>
     <meta charset="UTF-8">
     <title>Book Ticket</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right; /* 右对齐 */
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 在 header 内部水平分散对齐 */
+}
+
+#left-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+#airline-name {
+    margin-right: auto; /* 将右侧空间推到最大 */
+}
+
+#right-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#right-section a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#form-info {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#form-info p {
+    margin-right: 20px;
+}
+         table {
+        width: 100%;
+        border-collapse: collapse; /* 合并边框，使其看起来像单一的边框 */
+        margin-top: 20px; /* 添加一些顶部边距 */
+    }
+
+    th, td {
+        border: 1px solid #000; /* 设置边框样式和颜色 */
+        padding: 8px; /* 添加内边距，使内容与边框有一些间距 */
+        text-align: left; /* 左对齐文本 */
+    }
+
+    th {
+        background-color: gray; /* 设置表头背景颜色 */
+    }
+        .cancel-btn {
+        background-color: #006400; /* 绿色背景 */
+        color: #ffffff; /* 白色字体 */
+        padding: 6px 12px; /* 调整按钮内边距 */
+        text-decoration: none; /* 移除链接样式 */
+        border: none; /* 移除边框 */
+        border-radius: 5px; /* 圆角边框 */
+        cursor: pointer;
+    }
+    </style>
 </head>
 <body>
+<header>
+    <div id="left-section">
+        <div id="airline-name">SCUT Airlines</div>
+    </div>
+    <div id="right-section">
+        <nav>
+            <a href="#">购票</a>
+            <a href="login.html">个人中心</a>
+        </nav>
+        <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>
+        <a href="{% url 'logout' %}">退出</a>
+    </div>
+</header>
     <h2>预订航班</h2>
     {% if flight %}
         <!-- 显示错误消息 -->
         {% if error %}
             <p style="color: red;">{{ error }}</p>
         {% endif %}
-        <p>航班名: {{ flight.flight_name }}</p>
-        <p>起飞城市: {{ flight.departure }}</p>
-        <p>到达城市: {{ flight.destination }}</p>
-        <p>起飞时间: {{ flight.departure_time }}</p>
-        <p>到达时间: {{ flight.arrival_time }}</p>
-        <p>价格: {{ flight.price }}</p>
-        <p>余票数量: {{ remaining_seats }}</p>
+       <table>
+    <tr>
+        <th>航班名</th>
+        <th>起飞城市</th>
+        <th>到达城市</th>
+        <th>起飞时间</th>
+        <th>到达时间</th>
+        <th>价格</th>
+        <th>余票数量</th>
+    </tr>
+    <tr>
+        <td>{{ flight.flight_name }}</td>
+        <td>{{ flight.departure }}</td>
+        <td>{{ flight.destination }}</td>
+        <td>{{ flight.departure_time }}</td>
+        <td>{{ flight.arrival_time }}</td>
+        <td>{{ flight.price }}</td>
+        <td>{{ remaining_seats }}</td>
+    </tr>
+</table>
 
-
+<br></br>
         <form method="post" action="{% url 'book_ticket' flight.id %}">
             {% csrf_token %}
-            <input type="submit" value="提交预订">
+            <input type="submit"  class="cancel-btn" value="提交预订">
         </form>
     {% else %}
         <p>航班信息不存在。</p>

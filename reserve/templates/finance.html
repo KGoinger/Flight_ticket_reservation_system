@@ -4,33 +4,180 @@
     <head>
     <meta charset="UTF-8">
     <title>财务信息</title>
+<style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right; /* 右对齐 */
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 在 header 内部水平分散对齐 */
+}
+
+#left-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+#airline-name {
+    margin-right: auto; /* 将右侧空间推到最大 */
+}
+
+#right-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#right-section a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#form-info {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#form-info p {
+    margin-right: 20px;
+}
+         table {
+        width: 100%;
+        border-collapse: collapse; /* 合并边框，使其看起来像单一的边框 */
+        margin-top: 20px; /* 添加一些顶部边距 */
+    }
+
+    th, td {
+        border: 1px solid #000; /* 设置边框样式和颜色 */
+        padding: 0px; /* 添加内边距，使内容与边框有一些间距 */
+        text-align: left; /* 左对齐文本 */
+    }
+
+    th {
+        background-color: gray; /* 设置表头背景颜色 */
+    }
+<!--        .cancel-btn {-->
+<!--        background-color: #006400; /* 绿色背景 */-->
+<!--        color: #ffffff; /* 白色字体 */-->
+<!--        padding: 6px 12px; /* 调整按钮内边距 */-->
+<!--        text-decoration: none; /* 移除链接样式 */-->
+<!--        border: none; /* 移除边框 */-->
+<!--        border-radius: 5px; /* 圆角边框 */-->
+<!--        cursor: pointer;-->
+<!--    }-->
+    caption {
+        background-color: #87CEEB;
+        color: white;
+        padding: 8px;
+        text-align: center;
+    }
+    .income-table {
+        width: 30%; /* 设置每个表格的宽度，根据需要调整 */
+        margin: 20px; /* 设置表格之间的间距，根据需要调整 */
+        display: inline-block;
+    }
+    </style>
 </head>
 <body>
-    <h2>财务报告</h2>
+<header>
+    <div id="left-section">
+        <div id="airline-name">SCUT Airlines</div>
+    </div>
+    <div id="right-section">
+        <nav>
+            <a href="#">购票</a>
+            <a href="#">个人中心</a>
+        </nav>
+        <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>
+        <a href="{% url 'logout' %}">退出</a>
+    </div>
+</header>
+<h2>财务报告</h2>
+    <div class="income-table">
+    <table>
+        <caption>周收入</caption>
+        <thead>
+            <tr>
+                <th>航班架次</th>
+                <th>总收入</th>
+                <th>退票金额</th>
+                <th>利润</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ weekly_flights }}</td>
+                <td>{{ weekly_income }}</td>
+                <td>{{ weekly_refunds }}</td>
+                <td>{{ weekly_profit }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-    <section>
-        <h3>周收入</h3>
-        <p>航班架次: {{ weekly_flights }}</p>
-        <p>总收入: {{ weekly_income }}</p>
-        <p>退票金额: {{ weekly_refunds }}</p>
-        <p>利润: {{ weekly_profit }}</p>
-    </section>
+<div class="income-table">
+    <table>
+        <caption>月收入</caption>
+        <thead>
+            <tr>
+                <th>航班架次</th>
+                <th>总收入</th>
+                <th>退票金额</th>
+                <th>利润</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ monthly_flights }}</td>
+                <td>{{ monthly_income }}</td>
+                <td>{{ monthly_refunds }}</td>
+                <td>{{ monthly_profit }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
-    <section>
-        <h3>月收入</h3>
-        <p>航班架次: {{ monthly_flights }}</p>
-        <p>总收入: {{ monthly_income }}</p>
-        <p>退票金额: {{ monthly_refunds }}</p>
-        <p>利润: {{ monthly_profit }}</p>
-    </section>
-
-    <section>
-        <h3>年收入</h3>
-        <p>航班架次: {{ yearly_flights }}</p>
-        <p>总收入: {{ yearly_income }}</p>
-        <p>退票金额: {{ yearly_refunds }}</p>
-        <p>利润: {{ yearly_profit }}</p>
-    </section>
+<div class="income-table">
+    <table>
+        <caption>年收入</caption>
+        <thead>
+            <tr>
+                <th>航班架次</th>
+                <th>总收入</th>
+                <th>退票金额</th>
+                <th>利润</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ yearly_flights }}</td>
+                <td>{{ yearly_income }}</td>
+                <td>{{ yearly_refunds }}</td>
+                <td>{{ yearly_profit }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
     <h2>所有订单</h2>
     <table>
