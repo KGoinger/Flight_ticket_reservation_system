@@ -67,11 +67,13 @@ def search(request):
             messages.warning(request, '请填写所有字段。')
             return redirect('index')
 
+        # 将字符串格式的日期转换为日期对象
         departure_date = parse_date(departure_date_str)
 
         request.session['departure_city'] = departure_city
         request.session['arrival_city'] = arrival_city
         request.session['departure_date'] = departure_date_str
+
 
         flights = Flight.objects.filter(
             departure=departure_city,

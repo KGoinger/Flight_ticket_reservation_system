@@ -1,21 +1,109 @@
-<!DOCTYPE html>
+{% load static %}
+<!--<!DOCTYPE html>-->
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>登录</title>
+        <style>
+body
+{
+    background: url('{% static "images/login.jpg" %}') center no-repeat fixed;
+    background-size: 100% 130%;
+}
+#login_box
+{
+    width: 20%;
+    height: 400px;
+    background-color: #00000060;
+    margin: auto;
+    margin-top: 10%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 50px 50px;
+}
+h2
+{
+    color: #ffffff90;
+    /*color:#FFFFFF;*/
+    margin-top: 5%;
+}
+#input-box
+{
+    margin-top: 5%;
+}
+span
+{
+    color: #fff;
+}
+input
+{
+    border: 0;
+    width: 60%;
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border-bottom: 2px solid #fff;
+    padding: 5px 10px;
+    outline: none;
+    margin-top: 10px;
+}
+/*button*/
+.ok
+{
+    margin-top: 50px;
+    width: 60%;
+    height: 35px;
+    border-radius: 10px;
+    border: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    font-size: 15px;
+    /*background-image: linear-gradient(to right, #30cfd0, #330867);*/
+    background-image: linear-gradient(to right, #FF0000, #000000);
+}
+#sign_up
+{
+    margin-top: 45%;
+    margin-left: 60%;
+}
+a
+{
+    color: #b94648;
+}
+#register_box
+{
+    width: 20%;
+    height: 400px;
+    background-color: #00000060;
+    margin: auto;
+    margin-top: 10%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 50px 50px;
+}
+#input2-box
+{
+    margin-top: 5%;
+}
+        </style>
     </head>
     <body>
-        <form method="post" action="{% url 'login' %}">
+    <div id="login_box">
+    <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
-            <label>账号：</label>
-            <input name="username">
-            <div></div>
-            <label>密码：</label>
-            <input name="password">
-            <input type="submit" value="登录" />
-        </form>
-        <div>
-            <a type="submit" href="{% url 'register' %}">注册</a> {# 在登录界面增加注册的链接 #}
-        </div>
+        <h2>LOGIN</h2>
+    <div id="input_box">
+      <input name="username" type="text" id="dr_username" placeholder="请输入用户名">
+    </div>
+    <div class="input_box">
+      <input name="password" type="password" id="dr_password" placeholder="请输入密码"/>
+    </div>
+        <input type="submit" value="登录" class="ok" id="dr" />
+  </form>
+    <a href="{% url 'register' %}">
+    <input type="submit" value="注册" class="ok">
+    </a>
+    </div>
     </body>
 </html>
