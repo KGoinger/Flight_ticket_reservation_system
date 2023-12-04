@@ -1,44 +1,138 @@
-{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right; /* 右对齐 */
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 在 header 内部水平分散对齐 */
+}
+
+#left-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+#airline-name {
+    margin-right: auto; /* 将右侧空间推到最大 */
+}
+
+#right-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#right-section a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#form-info {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#form-info p {
+    margin-right: 20px;
+}
+         table {
+        width: 100%;
+        border-collapse: collapse; /* 合并边框，使其看起来像单一的边框 */
+        margin-top: 20px; /* 添加一些顶部边距 */
+    }
+
+    th, td {
+        border: 1px solid #000; /* 设置边框样式和颜色 */
+        padding: 8px; /* 添加内边距，使内容与边框有一些间距 */
+        text-align: left; /* 左对齐文本 */
+    }
+
+    th {
+        background-color: grey; /* 设置表头背景颜色 */
+    }
+        .cancel-btn {
+        background-color: #ff0000; /* 红色背景 */
+        color: #ffffff; /* 白色字体 */
+        padding: 6px 12px; /* 调整按钮内边距 */
+        text-decoration: none; /* 移除链接样式 */
+        border: none; /* 移除边框 */
+        border-radius: 5px; /* 圆角边框 */
+        cursor: pointer;
+    }
+    </style>
 </head>
 <body>
-    <div>
-        <h4>{{ request.user.username }} 欢迎登陆！</h4>
+<header>
+    <div id="left-section">
+        <div id="airline-name">SCUT Airlines</div>
     </div>
-    <div>
-        <h5>
-            <label>user: </label>
-            {{ request.user }}
-        </h5>
-        <h5>
-            <label>user.name: </label>
-            {{ request.user.username }}
-        </h5>
-    </div>
-    <div>
+    <div id="right-section">
+        <nav>
+            <a href="#">购票</a>
+            <a href="{% url 'login' %}">个人中心</a>
+        </nav>
+        <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>
         <a href="{% url 'logout' %}">退出</a>
     </div>
-    <div>
-        <h3>您的航班预订：</h3>
-        <ul>
+</header>
+<div>
+    <h3>您的航班预订：</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>航班名</th>
+                <th>出发城市</th>
+                <th>到达城市</th>
+                <th>出发时间</th>
+                <th>到达时间</th>
+                <th>价格</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for order in orders %}
-                <li>
-                    航班名: {{ order.flight.name }}<br>
-                    出发城市: {{ order.flight.departure }}<br>
-                    到达城市: {{ order.flight.destination }}<br>
-                    出发时间: {{ order.flight.departure_time }}<br>
-                    到达时间: {{ order.flight.arrival_time }}<br>
-                    价格: {{ order.flight.price }}<br>
-                    <a href="{% url 'cancel_order' order.id %}">退票</a>
-                </li>
-            {% empty %}
-                <li>您还没有预订任何航班。</li>
+                <tr>
+                    <td>{{ order.flight.name }}</td>
+                    <td>{{ order.flight.departure }}</td>
+                    <td>{{ order.flight.destination }}</td>
+                    <td>{{ order.flight.departure_time }}</td>
+                    <td>{{ order.flight.arrival_time }}</td>
+                    <td>{{ order.flight.price }}</td>
+                    <td><a class="cancel-btn" href="{% url 'cancel_order' order.id %}">退票</a></td>
+                </tr>
             {% endfor %}
+        </tbody>
+    </table>
+    {% if orders %}
+        <ul>
+            <li>您还没有预订任何航班。</li>
         </ul>
-    </div>
+    {% endif %}
+</div>
 </body>
 </html>
