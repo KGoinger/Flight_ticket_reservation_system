@@ -3,41 +3,216 @@
 <head>
     <meta charset="UTF-8">
     <title>首页</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" integrity="sha512-iZlNbQNSnJcXDgeN0N/PmqRNpQsiV/jxsGsAPqY1UmCZ8d69AyJxTSS5hfKTRQIeCmsF8WStxJ9FgYhgoCx3Rw==" crossorigin="anonymous" />
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 10px;
+            text-align: right;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        #left-section {
+            display: flex;
+            align-items: center;
+        }
+
+        #airline-name {
+            margin-right: auto;
+        }
+
+        #right-section {
+            display: flex;
+            align-items: center;
+        }
+
+        nav a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        #right-section a {
+            color: #fff;
+            text-decoration: none;
+            padding: 10px;
+            margin: 0 10px;
+        }
+
+        #form-info {
+            background-color: white;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #form-info p {
+            margin-right: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: grey;
+        }
+
+        .cancel-btn {
+            background-color: #ff0000;
+            color: #ffffff;
+            padding: 6px 12px;
+            text-decoration: none;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #rechargeModal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-content {
+            text-align: center;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+        }
+
+        /* 样式化关闭图标 */
+        .close i {
+            font-size: 20px;
+            color: #333;
+        }
+    </style>
 </head>
 <body>
-    <div>
-        <h4>{{ request.user.username }} 欢迎登陆！</h4>
+<header>
+    <div id="left-section">
+        <div id="airline-name">SCUT Airlines</div>
     </div>
-    <div>
-        <h5>
-            <label>user: </label>
-            {{ request.user }}
-        </h5>
-        <h5>
-            <label>user.name: </label>
-            {{ request.user.username }}
-        </h5>
-    </div>
-    <div>
+    <div id="right-section">
+        <nav>
+            <a href="#" onclick="openRechargeModal()">充值</a>
+            <a href="#">个人中心</a>
+        </nav>
+        <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>
         <a href="{% url 'logout' %}">退出</a>
     </div>
-    <div>
-        <h3>您的航班预订：</h3>
-        <ul>
+</header>
+<div>
+    <h3>您的航班预订：</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>航班名</th>
+                <th>出发城市</th>
+                <th>到达城市</th>
+                <th>出发时间</th>
+                <th>到达时间</th>
+                <th>价格</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
             {% for order in orders %}
-                <li>
-                    航班名: {{ order.flight.name }}<br>
-                    出发城市: {{ order.flight.departure }}<br>
-                    到达城市: {{ order.flight.destination }}<br>
-                    出发时间: {{ order.flight.departure_time }}<br>
-                    到达时间: {{ order.flight.arrival_time }}<br>
-                    价格: {{ order.flight.price }}<br>
-                    <a href="{% url 'cancel_order' order.id %}">退票</a>
-                </li>
-            {% empty %}
-                <li>您还没有预订任何航班。</li>
+                <tr>
+                    <td>{{ order.flight.name }}</td>
+                    <td>{{ order.flight.departure }}</td>
+                    <td>{{ order.flight.destination }}</td>
+                    <td>{{ order.flight.departure_time }}</td>
+                    <td>{{ order.flight.arrival_time }}</td>
+                    <td>{{ order.flight.price }}</td>
+                    <td><a class="cancel-btn" href="{% url 'cancel_order' order.id %}">退票</a></td>
+                </tr>
             {% endfor %}
+        </tbody>
+    </table>
+    {% if orders %}
+        <ul>
+            <li>您还没有预订任何航班。</li>
         </ul>
+    {% endif %}
+</div>
+
+<!-- 充值模态框 -->
+<div id="rechargeModal" class="modal">
+    <div class="modal-content">
+         <span class="close" onclick="closeRechargeModal()">&times;</span>
+        <h2>充值</h2>
+         <p>您的余额为：{{ request.user.profile.balance }}</p>
+       <form id="rechargeForm" >
+    {% csrf_token %}
+    <label for="amount">充值金额（单位：元）:</label>
+    <input type="text" id="amount" name="amount" required>
+    <button type="submit" onclick="submitRechargeForm()">充值</button>
+</form>
     </div>
+</div>
+
+
+<script>
+// JavaScript 部分
+function openRechargeModal() {
+    document.getElementById('rechargeModal').style.display = 'block';
+}
+
+function closeRechargeModal() {
+    document.getElementById('rechargeModal').style.display = 'none';
+}
+
+function submitRechargeForm() {
+    // 在这里可以添加提交表单的逻辑，例如通过 AJAX 发送充值请求
+    // 使用 fetch 发送 POST 请求
+    const amount = document.getElementById('amount').value;
+        fetch("{% url 'recharge' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new URLSearchParams({
+               'money': amount
+            })
+        })
+    alert('充值成功！'); // 这里使用弹窗提示，你可以根据需要修改
+    closeRechargeModal(); // 充值成功后关闭模态框
+    return false; // 防止表单提交导致页面刷新
+}
+</script>
 </body>
 </html>

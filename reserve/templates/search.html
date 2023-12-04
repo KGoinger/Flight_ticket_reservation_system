@@ -1,32 +1,219 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Search Results</title>
+    <style>
+        body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+    text-align: right; /* 右对齐 */
+    display: flex; /* 使用弹性布局 */
+    justify-content: space-between; /* 在 header 内部水平分散对齐 */
+}
+
+#left-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+#airline-name {
+    margin-right: auto; /* 将右侧空间推到最大 */
+}
+
+#right-section {
+    display: flex;
+    align-items: center; /* 垂直居中 */
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#right-section a {
+    color: #fff;
+    text-decoration: none;
+    padding: 10px;
+    margin: 0 10px;
+}
+#form-info {
+    background-color: white;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#form-info p {
+    margin-right: 20px;
+}
+ #query-form {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .form-group {
+        flex: 1; /* 让每个 .form-group 占据相等的宽度 */
+        box-sizing: border-box;
+        margin-right: 10px; /* 添加一些右侧边距以防止过于紧凑 */
+    }
+
+label {
+        display: inline-block; /* 将标签设置为行内块元素，与输入框并排显示 */
+        margin-bottom: 5px;
+        margin-right: 10px; /* 添加一些右侧边距以增加标签和输入框之间的间隔 */
+    }
+
+#search-again-btn {
+    padding: 8px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+        input {
+        width: calc(10% - 10px); /* 将宽度设置为容器的10%，留出一些边距 */
+        padding: 8px;
+        box-sizing: border-box;
+        margin-bottom: 10px;
+    }
+
+    /* 为按钮设置特定的宽度 */
+    input[type="submit"] {
+        width: 120px; /* 您可以根据需要调整宽度 */
+    }
+    </style>
 </head>
 <body>
-    <h2>查询结果</h2>
+<header>
+    <div id="left-section">
+        <div id="airline-name">SCUT Airlines</div>
+    </div>
+    <div id="right-section">
+        <nav>
+            <a href="#">购票</a>
+            <a href="{% url 'userprofile' %}">个人中心</a>
+        </nav>
+        <span id="welcome-message">欢迎您，<span id="user-greeting"></span></span>
+        <a href="{% url 'login' %}" onclick="logout()">退出登录</a>
+    </div>
+</header>
+<h1>航班查询</h1>
+    <form method="post" action="{% url 'search' %}" class="query-form">
+        {% csrf_token %}
+        <label for="departure_city">出发城市:</label>
+        <input type="text" id="departure_city" name="departure_city" value="{{ departure_city }}" required>
+        <label for="arrival_city">到达城市:</label>
+        <input type="text" id="arrival_city" name="arrival_city" value="{{ arrival_city }}" required>
+        <label for="departure_date">出发日期:</label>
+        <input type="date" id="departure_date" name="departure_date" value="{{ departure_date }}" required><br><br>
+        <input type="submit" name="button_clicked" value="起飞时间早-晚">
+        <input type="submit" name="button_clicked" value="到达时间早-晚">
+        <input type="submit" name="button_clicked" value="低价优先">
+        <input type="submit" name="button_clicked" value="耗时短优先">
+    </form>
+    <br>
+
     {% if flights %}
+        <h2>航班列表:</h2>
         <table>
             <tr>
-                <th>航班名</th>
-                <th>起飞时间</th>
+                <th>航班号</th>
+                <th>出发城市</th>
+                <th>到达城市</th>
+                <th>出发时间</th>
                 <th>到达时间</th>
                 <th>价格</th>
-                <th>操作</th>
+                <th>时长</th>
             </tr>
             {% for flight in flights %}
                 <tr>
-                    <td>{{ flight.name }}</td>
+                    <td>{{ flight.flight_name }}</td>
+                    <td>{{ flight.departure }}</td>
+                    <td>{{ flight.destination }}</td>
                     <td>{{ flight.departure_time }}</td>
                     <td>{{ flight.arrival_time }}</td>
                     <td>{{ flight.price }}</td>
-                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>
+                    <td>{{ flight.duration }}</td>
+                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>-->
                 </tr>
             {% endfor %}
         </table>
-    {% else %}
-        <p>没有找到符合条件的航班。</p>
     {% endif %}
+<script>
+    // 获取URL参数的函数
+    function getParameterByName(name) {
+        const url = new URL(window.location.href);
+        return url.searchParams.get(name);
+    }
+
+    // DOMContentLoaded事件监听器
+    document.addEventListener('DOMContentLoaded', function () {
+    // 打印 localStorage 中的内容
+    console.log('localStorage:', localStorage);
+
+    // 获取参数
+    const departure_city = localStorage.getItem('departure_city');
+    const arrivalCity = localStorage.getItem('arrival_city');
+    const departure_date = localStorage.getItem('departure_date');
+
+    // 在控制台输出参数
+    console.log('Departure City:', departure_city);
+    console.log('Arrival City:', arrival_city);
+    console.log('Departure Date:', departure_date);
+
+    // 在#form-info中显示参数
+    const formInfoElement = document.getElementById('form-info');
+    formInfoElement.innerHTML = `
+            <p>出发城市: <span id="departure_city">${departure_city}</span></p>
+            <p>到达城市: <span id="arrivalCity">${arrival_city}</span></p>
+            <p>出发日期: <span id="departure_date">${departure_date}</span></p>
+            <button id="search-again-btn" onclick="searchAgain()">重新搜索</button>
+        `;
+    // 全部获取后清除 localStorage 中的参数
+    localStorage.removeItem('departure_city');
+    localStorage.removeItem('arrival_city');
+    localStorage.removeItem('departure_date');
+});
+
+
+
+    // 重新搜索按钮点击事件
+    function searchAgain() {
+        // 在这里可以添加重新搜索的逻辑
+        // 例如跳转到机票预定页面或清空表单
+        window.location.href = "book_ticket.html";
+    }
+    // 退出登录
+    function logout() {
+        // 清空用户信息
+        localStorage.setItem("loggedInUser", null);
+        // 跳转到登录页面
+        window.location.href = "login.html";
+    }
+    function searchAgain() {
+        // 在这里可以添加重新搜索的逻辑
+        // 例如跳转到机票预定页面或清空表单
+
+        // 这里我添加了跳转到欢迎界面的逻辑
+        window.location.href = "index.html";
+    }
+</script>
 </body>
 </html>

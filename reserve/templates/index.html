@@ -1,23 +1,130 @@
+{% load static %}
 <!-- index.html -->
-<!DOCTYPE html>
+<!--<!DOCTYPE html>-->
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Flight Search</title>
+    <link rel="stylesheet" type="css" href="{% static 'index.css' %}">
+    <style>
+        body {
+            background: url('{% static "images/index.jpg" %}') center no-repeat fixed;
+            background-size: cover;
+        }
+
+        h2{
+            color: #fff;
+            margin-top: 150px;
+            margin-bottom: 10px;
+            margin-left: 75px;
+            margin-right: 40px;
+        }
+        .form-group {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .departure-label
+        {
+            font-size: 14px;
+            background-color: #FCFCFC;
+            padding: 5px;
+        }
+
+        .arrival-label
+        {
+            font-size: 14px;
+            background-color: #FCFCFC;
+            padding: 5px;
+        }
+        .departure_date-label
+        {
+            font-size: 14px;
+            background-color: #FCFCFC;
+            padding: 5px;
+        }
+        input
+        {
+            font-size: 14px;
+            padding: 5px;
+        }
+        form
+        {
+            margin-bottom: 10px;
+            margin-left: 75px;
+            margin-right: 40px;
+        }
+        .ok
+        {
+            margin-bottom: 10px;
+            margin-left: 100px;
+            margin-right: 40px;
+            background-image: linear-gradient(to right, #FF0000, #30cfd0);
+        }
+    </style>
 </head>
 <body>
-    <form action="{% url 'search' %}" method="post">
-        {% csrf_token %}
-        <label for="departure_city">出发城市:</label>
-        <input type="text" id="departure_city" name="departure_city">
+<h2>Where are we flying now?</h2>
+<form action="{% url 'search' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+        <label for="departure_city" class="departure-label">出发城市</label>
+        <input type="text" id="departure_city" name="departure_city" placeholder="City">
+    </div>
 
-        <label for="arrival_city">到达城市:</label>
-        <input type="text" id="arrival_city" name="arrival_city">
-
-        <label for="departure_date">出发日期:</label>
+    <div class="form-group">
+        <label for="arrival_city" class="arrival-label">到达城市</label>
+        <input type="text" id="arrival_city" name="arrival_city" placeholder="City">
+    </div>
+    <div class="form-group">
+        <label for="departure_date" class="departure_date-label">出发日期:</label>
         <input type="date" id="departure_date" name="departure_date">
+    </div>
+    <input type="submit" value="Let's Go!" class="ok" id="dr">
+</form>
+<script>
+    // 在 jump1 函数中存储参数
+    function jump1(event) {
+        // 获取表单元素的值
+        var departure_city = document.getElementById("departure_city").value;
+        var arrival_city = document.getElementById("arrival_city").value;
+        var departure_date = document.getElementById("departure_date").value;
 
-        <input type="submit" value="查询">
-    </form>
+        // 阻止表单的默认提交行为
+        event.preventDefault();
+
+        // 使用 fetch 发送 POST 请求
+        fetch("{% url 'search' %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            },
+            body: new URLSearchParams({
+                'departure_city': departure_city,
+                'arrival_city': arrival_city,
+                'departure_date': departure_date
+            })
+        })
+        .then(response => {
+            // 处理响应，可以根据需要进行跳转等操作
+            if (response.ok) {
+                // 跳转到查询页面
+                window.location.href = `search.html?departure_city=${encodeURIComponent(departure_city)}&arrival_city=${encodeURIComponent(arrival_city)}&departure_date=${encodeURIComponent(departure_date)}`;
+            } else {
+                // 处理错误情况
+                console.error('Error:', response.statusText);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+
+        // 返回 false 防止表单继续提交
+        return false;
+    }
+</script>
+
 </body>
 </html>

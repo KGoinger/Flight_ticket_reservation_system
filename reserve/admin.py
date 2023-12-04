@@ -7,7 +7,7 @@ from .models import Flight
 
 
 class FlightAdmin(admin.ModelAdmin):
-    # 定制哪些字段需要展示
+    # 定制哪些字段需要展示 航班名称，出发地，目的地，起飞时间，到达时间，航线，价格，座位总数，订票总数
     list_display = ('flight_name', 'departure', 'destination', 'departure_time','arrival_time','airline',
                     'price','capacity','book_sum')
 

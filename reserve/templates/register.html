@@ -1,14 +1,134 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
     <head>
         <meta charset="UTF-8">
         <title>注册</title>
     </head>
+    <style>
+        body
+{
+    background: url('{% static "images/register.jpg" %}') center no-repeat fixed;
+    background-size: 100% 130%;
+}
+h2
+{
+    color: #ffffff90;
+    /*color:#FFFFFF;*/
+    margin-top: 5%;
+}
+#input-box
+{
+    margin-top: 5%;
+}
+span
+{
+    color: #fff;
+}
+input
+{
+    border: 0;
+    width: 60%;
+    font-size: 15px;
+    color: #fff;
+    background: transparent;
+    border-bottom: 2px solid #fff;
+    padding: 5px 10px;
+    outline: none;
+    margin-top: 10px;
+}
+/*button*/
+.ok
+{
+    margin-top: 50px;
+    width: 60%;
+    height: 35px;
+    border-radius: 10px;
+    border: 0;
+    color: #fff;
+    text-align: center;
+    line-height: 30px;
+    font-size: 15px;
+    /*background-image: linear-gradient(to right, #30cfd0, #330867);*/
+    background-image: linear-gradient(to right, #30cfd0, #330867);
+}
+#sign_up
+{
+    margin-top: 45%;
+    margin-left: 60%;
+}
+a
+{
+    color: #b94648;
+}
+#register_box
+{
+    width: 20%;
+    height: 400px;
+    background-color: #00000060;
+    margin: auto;
+    margin-top: 10%;
+    text-align: center;
+    border-radius: 10px;
+    padding: 50px 50px;
+}
+#input2-box
+{
+    margin-top: 5%;
+}
+    </style>
     <body>
-        <form method="post" action="{% url 'register' %}">
-            {% csrf_token %}  {# 防止csrf（跨站请求伪造） #}
-            {{ form.as_p }}
-            <input type="submit" value="注册" />
+<!--        <form method="post" action="{% url 'register' %}">-->
+<!--            {% csrf_token %}  {# 防止csrf（跨站请求伪造） #}-->
+<!--            {{ form.as_p }}-->
+<!--            </form>-->
+            <div id="register_box">
+                <h2>REGISTER</h2>
+<form method="post" action="{% url 'register' %}">
+    {% csrf_token %}
+
+    <!-- 逐个列出表单字段 -->
+    {% for field in form %}
+        <div class="input_box">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+        </div>
+    {% endfor %}
+
+<input type="submit" value="完成注册" onclick="save_date()" class="ok" id="zhuce">
+</form>
+
+<!--  <div id="input2_box">-->
+<!--    &lt;!&ndash;            <label for="user"></label>&ndash;&gt;-->
+<!--    <input type="text" id="username"placeholder="请输入用户名">-->
+<!--  </div>-->
+<!--  <div class="input_box">-->
+<!--    &lt;!&ndash;            <label for="password"></label>&ndash;&gt;-->
+<!--    <input type="password" id="password"placeholder="请输入密码">-->
+<!--  </div>-->
+  <!--    <button>登录</button><br>-->
+  <!--            <button>注册</button><br>-->
+  <!--        <input type="submit"value="登录"onclick="login()"class="ok">-->
+<!--  <input type="submit" value="完成注册" onclick="save_date()" class="ok" id="zhuce">-->
+  <!--    </form>-->
+
+</div>
         </form>
     </body>
 </html>
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--    <head>-->
+<!--        <meta charset="UTF-8">-->
+<!--        <title>注册</title>-->
+<!--    </head>-->
+<!--    <body>-->
+<!--        <form method="post" action="{% url 'register' %}">-->
+<!--            {% csrf_token %}  {# 防止csrf（跨站请求伪造） #}-->
+<!--            {{ form.as_p }}-->
+<!--            <input type="submit" value="注册" />-->
+<!--        </form>-->
+<!--    </body>-->
+<!--</html>-->

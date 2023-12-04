@@ -12,4 +12,5 @@ urlpatterns = [
     path('finance/', views.finance, name='finance'),
     path('book_ticket/<int:flight_id>/', views.book_ticket, name='book_ticket'),
     path('cancel_order/<int:order_id>/', views.cancel_order, name='cancel_order'),
+    path('recharge/', views.recharge, name='recharge'),
 ]
