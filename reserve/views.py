@@ -320,3 +320,10 @@ def cancel_order(request, order_id):
 
     # 重定向到用户主页
     return redirect('userprofile')
+
+def recharge(request):
+    money = int(request.POST.get('money'))
+    user_profile = UserProfile.objects.get(user=request.user)
+    user_profile.balance += money
+    user_profile.save()
+    return redirect('userprofile')
