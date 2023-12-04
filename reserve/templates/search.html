@@ -1,32 +1,87 @@
+<!-- search.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Search Results</title>
+    <title>航班查询</title>
 </head>
 <body>
-    <h2>查询结果</h2>
+    <h1>航班查询</h1>
+    <form method="post" action="{% url 'search' %}">
+        {% csrf_token %}
+        <label for="departure_city">出发城市:</label>
+        <input type="text" id="departure_city" name="departure_city" value="{{ departure_city }}" required><br><br>
+        <label for="arrival_city">到达城市:</label>
+        <input type="text" id="arrival_city" name="arrival_city" value="{{ arrival_city }}" required><br><br>
+        <label for="departure_date">出发日期:</label>
+        <input type="date" id="departure_date" name="departure_date" value="{{ departure_date }}" required><br><br>
+        <input type="submit" name="button_clicked" value="起飞时间早-晚">
+        <input type="submit" name="button_clicked" value="到达时间早-晚">
+        <input type="submit" name="button_clicked" value="低价优先">
+        <input type="submit" name="button_clicked" value="耗时短优先">
+    </form>
+    <br>
+
     {% if flights %}
+        <h2>航班列表:</h2>
         <table>
             <tr>
-                <th>航班名</th>
-                <th>起飞时间</th>
+                <th>航班号</th>
+                <th>出发城市</th>
+                <th>到达城市</th>
+                <th>出发时间</th>
                 <th>到达时间</th>
                 <th>价格</th>
-                <th>操作</th>
+                <th>时长</th>
             </tr>
             {% for flight in flights %}
                 <tr>
-                    <td>{{ flight.name }}</td>
+                    <td>{{ flight.flight_name }}</td>
+                    <td>{{ flight.departure }}</td>
+                    <td>{{ flight.destination }}</td>
                     <td>{{ flight.departure_time }}</td>
                     <td>{{ flight.arrival_time }}</td>
                     <td>{{ flight.price }}</td>
-                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>
+                    <td>{{ flight.duration }}</td>
+                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>-->
                 </tr>
             {% endfor %}
         </table>
-    {% else %}
-        <p>没有找到符合条件的航班。</p>
     {% endif %}
 </body>
 </html>
+
+
+
+
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>Search Results</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--    <h2>查询结果</h2>-->
+<!--    {% if flights %}-->
+<!--        <table>-->
+<!--            <tr>-->
+<!--                <th>航班名</th>-->
+<!--                <th>起飞时间</th>-->
+<!--                <th>到达时间</th>-->
+<!--                <th>价格</th>-->
+<!--                <th>操作</th>-->
+<!--            </tr>-->
+<!--            {% for flight in flights %}-->
+<!--                <tr>-->
+<!--                    <td>{{ flight.name }}</td>-->
+<!--                    <td>{{ flight.departure_time }}</td>-->
+<!--                    <td>{{ flight.arrival_time }}</td>-->
+<!--                    <td>{{ flight.price }}</td>-->
+<!--                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>-->
+<!--                </tr>-->
+<!--            {% endfor %}-->
+<!--        </table>-->
+<!--    {% else %}-->
+<!--        <p>没有找到符合条件的航班。</p>-->
+<!--    {% endif %}-->
+<!--</body>-->
+<!--</html>-->
