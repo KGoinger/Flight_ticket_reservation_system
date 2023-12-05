@@ -17,6 +17,15 @@ from django.contrib import messages
 # Create your views here.
 from django.http import HttpResponse
 
+from pyecharts.charts import Bar
+from pyecharts import options as opts
+
+def create_financial_chart(weekly_income, monthly_income, yearly_income):
+    bar = Bar()
+    bar.add_xaxis(["周收入", "月收入", "年收入"])
+    bar.add_yaxis("收入", [weekly_income, monthly_income, yearly_income])
+    bar.set_global_opts(title_opts=opts.TitleOpts(title="收入图表"))
+    return bar
 
 def index(request):
     return render(request, 'index.html')
@@ -232,6 +241,9 @@ def finance(request):
     year_ago = current_time - timedelta(days=365)
     yearly_flights, yearly_income, yearly_refunds, yearly_profit = calculate_financial_data(year_ago)
 
+    # 创建图表
+    chart = create_financial_chart(weekly_income, monthly_income, yearly_income)
+    chart_html = chart.render_embed()
     return render(request, 'finance.html', {
         'orders': orders,
         'weekly_flights': weekly_flights,
@@ -245,7 +257,8 @@ def finance(request):
         'yearly_flights': yearly_flights,
         'yearly_income': yearly_income,
         'yearly_refunds': yearly_refunds,
-        'yearly_profit': yearly_profit
+        'yearly_profit': yearly_profit,
+        'chart_html': chart_html
     })
 
 
