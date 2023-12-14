@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-cu(lebq=o)d13p&ffb0w#hp4e-q5tfeof!(k23pf9m@%ibz0!$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.124.177','127.0.0.1','192.168.124.188']
 
 
 # Application definition
@@ -116,7 +116,6 @@ TIME_ZONE = 'Asia/Shanghai'
 USE_I18N = True
 
 USE_TZ = False
-
 
 
 

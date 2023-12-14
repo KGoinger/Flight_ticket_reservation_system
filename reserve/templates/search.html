@@ -107,7 +107,7 @@ label {
     </div>
     <div id="right-section">
         <nav>
-            <a href="#">购票</a>
+            <a href="{% url 'index' %}">购票</a>
             <a href="{% url 'userprofile' %}">个人中心</a>
         </nav>
         <span id="welcome-message">欢迎您，<span id="user-greeting"></span></span>
@@ -130,31 +130,110 @@ label {
     </form>
     <br>
 
-    {% if flights %}
-        <h2>航班列表:</h2>
-        <table>
+{#    {% if flights %}#}
+{#        <h2>航班列表:</h2>#}
+{#        <table>#}
+{#            <tr>#}
+{#                <th>航班号</th>#}
+{#                <th>出发城市</th>#}
+{#                <th>到达城市</th>#}
+{#                <th>出发时间</th>#}
+{#                <th>到达时间</th>#}
+{#                <th>价格</th>#}
+{#                <th>时长</th>#}
+{#            </tr>#}
+{#            {% for flight in flights %}#}
+{#                <tr>#}
+{#                    <td>{{ flight.flight_name }}</td>#}
+{#                    <td>{{ flight.departure }}</td>#}
+{#                    <td>{{ flight.destination }}</td>#}
+{#                    <td>{{ flight.departure_time }}</td>#}
+{#                    <td>{{ flight.arrival_time }}</td>#}
+{#                    <td>{{ flight.price }}</td>#}
+{#                    <td>{{ flight.duration }}</td>#}
+{#                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>#}
+{#                </tr>#}
+{#            {% endfor %}#}
+{#        </table>#}
+{#    {% endif %}#}
+{% if flights %}
+    <h2>航班列表:</h2>
+    <table>
+        <!-- 表格头部 -->
+        <tr>
+            <th>航班号</th>
+            <th>出发城市</th>
+            <th>到达城市</th>
+            <th>出发时间</th>
+            <th>到达时间</th>
+            <th>头等舱价格</th>
+            <th>经济舱价格</th>
+            <th>时长</th>
+            <th>操作</th>
+        </tr>
+        {% for flight in flights %}
             <tr>
-                <th>航班号</th>
-                <th>出发城市</th>
-                <th>到达城市</th>
-                <th>出发时间</th>
-                <th>到达时间</th>
-                <th>价格</th>
-                <th>时长</th>
+                <td>{{ flight.flight_name }}</td>
+                <td>{{ flight.departure }}</td>
+                <td>{{ flight.destination }}</td>
+                <td>{{ flight.departure_time }}</td>
+                <td>{{ flight.arrival_time }}</td>
+                <td>{{ flight.first_class_price }}</td>
+                <td>{{ flight.economy_class_price }}</td>
+                <td>{{ flight.duration }}</td>
+                <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>
             </tr>
-            {% for flight in flights %}
+        {% endfor %}
+    </table>
+{% endif %}
+
+
+    <h2>中转航班:</h2>
+    {% if transfer_flights %}
+        <table>
+            <!-- 表格头部 -->
+            <tr>
+                <th>第一段航班号</th>
+                <th>头等舱价格</th>
+                <th>经济舱价格</th>
+                <th>出发城市</th>
+                <th>中转城市</th>
+                <th>到达城市</th>
+                <th></th>
+                <th>第二段航班号</th>
+                <th>头等舱价格</th>
+                <th>经济舱价格</th>
+
+{#                <th>总价格</th>#}
+                <!-- 其他需要的列 -->
+            </tr>
+            <!-- 循环显示每个中转航班 -->
+            {% for flight in transfer_flights %}
                 <tr>
-                    <td>{{ flight.flight_name }}</td>
-                    <td>{{ flight.departure }}</td>
-                    <td>{{ flight.destination }}</td>
-                    <td>{{ flight.departure_time }}</td>
-                    <td>{{ flight.arrival_time }}</td>
-                    <td>{{ flight.price }}</td>
-                    <td>{{ flight.duration }}</td>
-                    <td><a href="{% url 'book_ticket' flight.id %}">订票</a></td>-->
+                    <td>{{ flight.first_leg.flight_name }}</td>
+                    <td>{{ flight.first_leg.first_class_price }}</td>
+                    <td>{{ flight.first_leg.economy_class_price }}</td>
+                    <td>{{ flight.first_leg.departure }}</td>
+                    <td>{{ flight.first_leg.destination }}</td>
+                    <td>{{ flight.second_leg.destination }}</td>
+                    <td></td>
+                    <td>{{ flight.second_leg.flight_name }}</td>
+                    <td>{{ flight.second_leg.first_class_price }}</td>
+                    <td>{{ flight.second_leg.economy_class_price }}</td>
+{#                    <td>{{ flight.total_price }}</td>#}
+                    <!-- 添加预订按钮 -->
+                    <!-- <td>
+                        <form method="post" action="{% url 'book_transfer_ticket' flight.first_leg.id flight.second_leg.id %}">
+                            {% csrf_token %}
+                            <input type="submit" value="预订中转航班">
+                        </form>
+                    </td> -->
+                    <td><a href="{% url 'book_transfer_ticket' flight.first_leg.id flight.second_leg.id %}">订票</a></td>
                 </tr>
             {% endfor %}
         </table>
+    {% else %}
+        <p>无中转航班</p>
     {% endif %}
 <script>
     // 获取URL参数的函数

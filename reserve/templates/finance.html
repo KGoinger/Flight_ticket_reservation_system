@@ -105,7 +105,7 @@ nav a {
     </div>
     <div id="right-section">
         <nav>
-            <a href="#">购票</a>
+            <a href="{% url 'index' %}">购票</a>
             <a href="#">个人中心</a>
         </nav>
         <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>

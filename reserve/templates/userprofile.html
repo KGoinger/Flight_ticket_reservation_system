@@ -127,6 +127,7 @@
     </div>
     <div id="right-section">
         <nav>
+            <a href="{% url 'index' %}">购票</a>
             <a href="#" onclick="openRechargeModal()">充值</a>
             <a href="#">个人中心</a>
         </nav>
@@ -144,6 +145,7 @@
                 <th>到达城市</th>
                 <th>出发时间</th>
                 <th>到达时间</th>
+                <th>舱位</th>
                 <th>价格</th>
                 <th>操作</th>
             </tr>
@@ -151,12 +153,13 @@
         <tbody>
             {% for order in orders %}
                 <tr>
-                    <td>{{ order.flight.name }}</td>
+                    <td>{{ order.flight.flight_name }}</td>
                     <td>{{ order.flight.departure }}</td>
                     <td>{{ order.flight.destination }}</td>
                     <td>{{ order.flight.departure_time }}</td>
                     <td>{{ order.flight.arrival_time }}</td>
-                    <td>{{ order.flight.price }}</td>
+                    <td>{{ order.class_type}}</td>
+                    <td>{{ order.price }}</td>
                     <td><a class="cancel-btn" href="{% url 'cancel_order' order.id %}">退票</a></td>
                 </tr>
             {% endfor %}

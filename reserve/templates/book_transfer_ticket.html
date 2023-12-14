@@ -95,19 +95,19 @@ nav a {
     <div id="right-section">
         <nav>
             <a href="{% url 'index' %}">购票</a>
-            <a href="{% url 'userprofile' %}">个人中心</a>
+            <a href="login.html">个人中心</a>
         </nav>
         <span id="welcome-message">欢迎您，{{ request.user.username }}<span id="user-greeting"></span></span>
         <a href="{% url 'logout' %}">退出</a>
     </div>
 </header>
-    <h2>预订航班</h2>
-    {% if flight %}
-        <!-- 显示错误消息 -->
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
-        {% endif %}
-       <table>
+<h2>预订中转航班</h2>
+{% if error %}
+    <p style="color: red;">{{ error }}</p>
+{% endif %}
+
+<h3>第一段航班</h3>
+<table>
     <tr>
         <th>航班名</th>
         <th>起飞城市</th>
@@ -120,29 +120,60 @@ nav a {
         <th>经济舱余票</th>
     </tr>
     <tr>
-        <td>{{ flight.flight_name }}</td>
-        <td>{{ flight.departure }}</td>
-        <td>{{ flight.destination }}</td>
-        <td>{{ flight.departure_time }}</td>
-        <td>{{ flight.arrival_time }}</td>
-        <td>{{ flight.first_class_price }}</td>
-        <td>{{ first_class_remaining_seats }}</td>
-        <td>{{ flight.economy_class_price }}</td>
-        <td>{{ economy_class_remaining_seats }}</td>
+        <td>{{ first_leg.flight_name }}</td>
+        <td>{{ first_leg.departure }}</td>
+        <td>{{ first_leg.destination }}</td>
+        <td>{{ first_leg.departure_time }}</td>
+        <td>{{ first_leg.arrival_time }}</td>
+        <td>{{ first_leg.first_class_price }}</td>
+        <td>{{ first_leg_first_class_remaining_seats }}</td>
+        <td>{{ first_leg.economy_class_price }}</td>
+        <td>{{ first_leg_economy_class_remaining_seats }}</td>
     </tr>
 </table>
 
-<br></br><form method="post" action="{% url 'book_ticket' flight.id %}">
-            {% csrf_token %}
-            <label for="class_type">选择舱位类别:</label>
-            <select id="class_type" name="class_type">
+<h3>第二段航班</h3>
+<table>
+    <tr>
+       <th>航班名</th>
+        <th>起飞城市</th>
+        <th>到达城市</th>
+        <th>起飞时间</th>
+        <th>到达时间</th>
+        <th>头等舱价格</th>
+        <th>头等舱余票</th>
+        <th>经济舱价格</th>
+        <th>经济舱余票</th>
+    </tr>
+    <tr>
+        <td>{{ second_leg.flight_name }}</td>
+        <td>{{ second_leg.departure }}</td>
+        <td>{{ second_leg.destination }}</td>
+        <td>{{ second_leg.departure_time }}</td>
+        <td>{{ second_leg.arrival_time }}</td>
+        <td>{{ second_leg.first_class_price }}</td>
+        <td>{{ second_leg_first_class_remaining_seats }}</td>
+        <td>{{ second_leg.economy_class_price }}</td>
+        <td>{{ second_leg_economy_class_remaining_seats }}</td>
+    </tr>
+</table>
+
+<br></br>
+<form method="post" action="{% url 'book_transfer_ticket' first_leg.id second_leg.id %}">
+    {% csrf_token %}
+    <label for="first_leg_class_type">选择第一段航班舱位类别:</label>
+            <select id="first_leg_class_type" name="first_leg_class_type">
                 <option value="economy_class">经济舱</option>
                 <option value="first_class">头等舱</option>
             </select>
-            <input type="submit" class="cancel-btn" value="提交预订">
-        </form>
-    {% else %}
-        <p>航班信息不存在。</p>
-    {% endif %}
+    <br></br>
+    <label for="second_leg_class_type">选择第二段航班舱位类别:</label>
+            <select id="second_leg_class_type" name="second_leg_class_type">
+                <option value="economy_class">经济舱</option>
+                <option value="first_class">头等舱</option>
+            </select>
+    <br></br>
+    <input type="submit" class="submit-btn" value="提交预订">
+</form>
 </body>
 </html>
